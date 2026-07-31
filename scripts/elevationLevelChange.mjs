@@ -79,13 +79,15 @@ async function changeLevel( token, movement, destinationLevels, originLevel, cur
 	// The view isn't automatically changed for GM users or Players with another owned Token on the viewed level
 	const controlledTokens = canvas.tokens.controlled.map(t => t.id);
 	
-	if ( game.user.isGM && token.parent.isView && canvas.level.id === originLevel.id ) await token.parent.view({ level: destinationLevel.id, controlledTokens});
+	if ( game.user.isGM && token.parent.isView && canvas.level.id === originLevel.id ) await token.parent.view({ level: destinationLevel.id });
 
 	if ( !game.user.isGM && token.parent.isView && canvas.level.id === originLevel.id ) {
 		const ownedTokensOnLevel = canvas.scene.tokens
 		.filter((t) => t.getUserLevel() === CONST.DOCUMENT_OWNERSHIP_LEVELS.OWNER && t.level === originLevel.id && t.id !== token.id)
-		if ( ownedTokensOnLevel.length > 0 ) await token.parent.view({ level: destinationLevel.id, controlledTokens});
+		if ( ownedTokensOnLevel.length > 0 ) await token.parent.view({ level: destinationLevel.id });
 	}
+	
+	controlledTokens.forEach( token => canvas.tokens.get(token)?.control({ releaseOthers: false }))
 }
 
 async function confirmDialog( levels, token ) {
