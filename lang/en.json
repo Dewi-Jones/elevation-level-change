@@ -1,0 +1,16 @@
+{
+	"ELEVATION_LEVEL_CHANGE.SETTINGS": {
+		"playerMovement": {
+			"name": "Player Movement",
+			"hint": "Allows Player Movement to trigger a Level Change."
+		},
+		"skipDialog": {
+			"name": "Skip Confirmation Dialog",
+			"hint": "Automatically performs the Level Change without confirmation. If there are multiple viable levels at the destination, the Confirmation Dialog appears regardless of this setting."
+		},
+		"viewLevel": {
+			"name": "View New Level",
+			"hint": "Automatically switch to the new level on a Level Change. Might screw with the currently selected tokens."
+		}
+	}
+}
