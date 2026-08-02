@@ -42,10 +42,13 @@ Hooks.on("preMoveToken", (token, movement, operation) => {
 	// Prevents recursive behaviour and undesired triggers like Teleports or Change Level Regions
 	if ( movement.method === "api" || movement.method === "paste" ) return
 	
-	// If the token didn't move from inside to outside the current level's range, do nothing
+	// If the token didn't move from inside to outside the current levels range, do nothing
+	// If movement is chained, and moves back into the current level's range, do nothing
+	const pendingElevation = movement.pending.waypoints.at(-1)?.elevation;
 	const originLevel = token.parent.levels.get(token._source.level);
 	if ( movement.origin.elevation < originLevel.elevation.bottom || movement.origin.elevation >= originLevel.elevation.top ) return
 	if ( movement.destination.elevation >= originLevel.elevation.bottom && movement.destination.elevation < originLevel.elevation.top ) return
+	if ( pendingElevation >= originLevel.elevation.bottom && pendingElevation < originLevel.elevation.top ) return
 	
 	// If there is no viable level, do nothing
 	const destinationLevels = getDestinationLevels( movement.destination.elevation, token );
@@ -65,14 +68,11 @@ async function changeLevel( token, movement, destinationLevels, originLevel, cur
 	const { level: destinationLevelId } = await confirmDialog( destinationLevels, token );
 	const destinationLevel = destinationLevelId ? token.parent.levels.get(destinationLevelId) : originLevel
 	
-	// Redo movement with the new destinationLevel
-	await token.move({ 
-		elevation: movement.destination.elevation,
-		level: destinationLevel.id,
-		x: movement.destination.x,
-		y: movement.destination.y,
-		action: currentAction
-	});
+	// Redo movement with the new destinationLevel. Only the first Level Change is actually triggered.
+	const waypoints = movement.pending.waypoints.filter( w => !w.intermediate );
+	waypoints.unshift(movement.passed.waypoints.at(-1));
+	const newWaypoints = waypoints.map( w => ({ ...w, level: destinationLevel.id }));
+	await token.move(newWaypoints);
 	
 	if ( !game.settings.get("elevation-level-change", "viewLevel") ) return
 	
