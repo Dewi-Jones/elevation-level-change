@@ -53,6 +53,9 @@ Hooks.on("init", () => {
 
 Hooks.on("preMoveToken", (token, movement, operation) => {
 	
+	// If there's only one level, do nothing
+	if ( token.parent.levels.size <= 1 ) return
+	
 	// Respect Player Movement Setting
 	if ( !game.user.isGM && !game.settings.get(id, "playerMovement") ) return
 	
