@@ -86,6 +86,9 @@ Hooks.on("preMoveToken", (token, movement, operation) => {
 // Based on Trills GALC (https://github.com/lucky-trill/galc)
 Hooks.on("renderLevelConfig", (app, elements, context, option) => {
 	
+	const level = app.document;
+	if ( level.parent.levels.size <= 1 ) return
+	
 	const newFieldset = document.createElement("fieldset");
 	newFieldset.className = id;
 	
@@ -93,7 +96,6 @@ Hooks.on("renderLevelConfig", (app, elements, context, option) => {
 	legend.innerText = "Elevation Level Change";
 	newFieldset.append(legend);
 	
-	const level = app.document;
 	const modes = [
 		{ value: "default", label: `${_loc("ELEVATION_LEVEL_CHANGE.CONFIG.mode.default")} (${_loc(`ELEVATION_LEVEL_CHANGE.CONFIG.mode.${game.settings.get(id, "defaultMode")}`)})` }, //0
 		{ value: "excluded", label: "ELEVATION_LEVEL_CHANGE.CONFIG.mode.excluded" }, //1
