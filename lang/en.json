@@ -11,6 +11,26 @@
 		"viewLevel": {
 			"name": "View New Level",
 			"hint": "Automatically switch to the new level on a Level Change. Might screw with the currently selected tokens."
+		},
+		"defaultMode": {
+			"name": "Default Mode",
+			"hint": "Levels with the Destination or Origin mode can only be reached or left (not both) via Elevation Level Change."
+		}
+	},
+	"ELEVATION_LEVEL_CHANGE.CONFIG": {
+		"collections": {
+			"label": "Collections",
+			"hint": "Elevation Level Changes are only possible between Levels that share at least one collection. Separate multiple collections with semicolons. An empty selection applies inclusion to all collections.",
+			"placeholder": "All Collections"
+		},
+		"mode": {
+			"label": "Mode",
+			"hint": "Levels with the Destination or Origin mode can only be reached or left (not both) via Elevation Level Change.",
+			"excluded": "Excluded",
+			"destination": "Destination Only",
+			"origin": "Origin Only",
+			"included": "Included",
+			"default": "Default"
 		}
 	}
 }
