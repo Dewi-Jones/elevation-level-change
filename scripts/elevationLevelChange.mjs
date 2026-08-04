@@ -129,7 +129,7 @@ async function changeLevel( token, movement, destinationLevels, originLevel, cur
 	
 	// Get ID of Destination Level. If the Dialog was cancelled, set Origin Level as Destination Level
 	const destinationLevelId = await confirmDialog( destinationLevels, token );
-	const destinationLevel = destinationLevelId ? token.parent.levels.get(destinationLevelId) : originLevel
+	const destinationLevel = destinationLevelId ? token.parent.levels.get(destinationLevelId) : originLevel;
 	
 	// Redo movement with the new destinationLevel. Only the first Level Change is actually triggered.
 	const waypoints = movement.pending.waypoints.filter( w => !w.intermediate );
@@ -160,7 +160,7 @@ async function changeLevel( token, movement, destinationLevels, originLevel, cur
 async function confirmDialog( levels, token ) {
 	
 	// Skip Confirmation Dialog if possible
-	if ( game.settings.get(id, "skipDialog") && levels.length === 1 ) return { level: levels[0].id }
+	if ( game.settings.get(id, "skipDialog") && levels.length === 1 ) return levels[0].id
 	
 	const questionElement = window.document.createElement("p");
     questionElement.textContent = levels.length !== 1 ? _loc("BEHAVIOR.TYPES.changeLevel.ConfirmSelect", {token: token.name})
