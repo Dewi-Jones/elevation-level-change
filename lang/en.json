@@ -10,7 +10,7 @@
 		},
 		"viewLevel": {
 			"name": "View New Level",
-			"hint": "Automatically switch to the new level on a Level Change. Might screw with the currently selected tokens."
+			"hint": "Always switch the viewed level when a Level Change is performed. Player view is always switched, if the player has no owned tokens on the origin scene left."
 		},
 		"defaultMode": {
 			"name": "Default Mode",

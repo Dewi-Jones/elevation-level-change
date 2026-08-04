@@ -128,7 +128,7 @@ Hooks.on("renderLevelConfig", (app, elements, context, option) => {
 async function changeLevel( token, movement, destinationLevels, originLevel, currentAction ) {
 	
 	// Get ID of Destination Level. If the Dialog was cancelled, set Origin Level as Destination Level
-	const { level: destinationLevelId } = await confirmDialog( destinationLevels, token );
+	const destinationLevelId = await confirmDialog( destinationLevels, token );
 	const destinationLevel = destinationLevelId ? token.parent.levels.get(destinationLevelId) : originLevel
 	
 	// Redo movement with the new destinationLevel. Only the first Level Change is actually triggered.
@@ -185,9 +185,9 @@ async function confirmDialog( levels, token ) {
       content,
       yes: {
         label: "BEHAVIOR.TYPES.changeLevel.Move",
-        callback: (event, button) => ({
-          level: button.form.elements.level.value
-        })
+        callback: (event, button) => (
+          button.form.elements.level.value
+        )
       },
       no: {label: "BEHAVIOR.TYPES.changeLevel.DoNotMove"}
     });
