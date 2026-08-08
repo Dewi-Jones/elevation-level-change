@@ -129,15 +129,11 @@ async function changeLevel( token, movement, destinationLevels, originLevel, cur
 	
 	// Get ID of Destination Level. If the Dialog was cancelled, set Origin Level as Destination Level
 	const destinationLevelId = await confirmDialog( destinationLevels, token );
-	const destinationLevel = destinationLevelId ? token.parent.levels.get(destinationLevelId) : originLevel;
+	const destinationLevel = token.parent.levels.get(destinationLevelId) ?? originLevel;
 	
-	// Redo movement with the new destinationLevel. Only the first Level Change is actually triggered.
-	const waypoints = movement.pending.waypoints.filter( w => !w.intermediate );
-	waypoints.unshift(movement.passed.waypoints.at(-1));
+	// Redo movement with the new destinationLevel.
+	const waypoints = [ movement.passed.waypoints.at(-1) ];
 	const newWaypoints = waypoints.map( w => ({ ...w, level: destinationLevel.id }));
-	// TODO: Decide what happens if moving through more than one Level.
-	// Currently, only the first level is available to swap to, since the new movement doesn't trigger a level change.
-	// Only one Level Change should be triggered. More would be a bad UX.
 	await token.move(newWaypoints, { constrainOptions: movement.constrainOptions, autoRotate: movement.autoRotate, showRuler: movement.showRuler });
 	
 	if ( !game.settings.get(id, "viewLevel") ) return
@@ -153,7 +149,7 @@ async function changeLevel( token, movement, destinationLevels, originLevel, cur
 		if ( ownedTokensOnLevel.length > 0 ) await token.parent.view({ level: destinationLevel.id });
 	}
 	
-	controlledTokens.forEach( token => canvas.tokens.get(token)?.control({ releaseOthers: false }))
+	controlledTokens.forEach( token => canvas.tokens.get(token)?.control({ releaseOthers: false }));
 }
 
 // Based on Cores Change Level Behavior Dialog
