@@ -132,9 +132,9 @@ async function changeLevel( token, movement, destinationLevels, originLevel, cur
 	
 	// Get ID of Destination Level. If the Dialog was cancelled, set Origin Level as Destination Level
 	const destinationLevelId = await confirmDialog( destinationLevels, token );
-	const destinationLevel = destinationLevelId ? token.parent.levels.get(destinationLevelId) : originLevel;
+	const destinationLevel = token.parent.levels.get(destinationLevelId) ?? originLevel;
 	
-	// Redo movement with the new destinationLevel. Only the first Level Change is actually triggered.
+	// Redo movement with the new destinationLevel.
 	const waypoints = movement.pending.waypoints.filter( w => !w.intermediate );
 	waypoints.unshift(movement.passed.waypoints.at(-1));
 	const newWaypoints = waypoints.map(( w, index ) => (index === waypoints.length - 1 ? { ...w, level: destinationLevel.id } : w ));
@@ -143,6 +143,7 @@ async function changeLevel( token, movement, destinationLevels, originLevel, cur
 	if ( !game.settings.get(id, "viewLevel") ) return
 	
 	// The view isn't automatically changed for GM users or Players with another owned Token on the viewed level
+	// Wait for animation to avoid visual bug, where the animation of the last step doesn't finish
 	if ( token.rendered ) await token.object.movementAnimationPromise
 	const controlledTokens = canvas.tokens.controlled.map(t => t.id);
 	
@@ -154,7 +155,7 @@ async function changeLevel( token, movement, destinationLevels, originLevel, cur
 		if ( ownedTokensOnLevel.length > 0 ) await token.parent.view({ level: destinationLevel.id });
 	}
 	
-	controlledTokens.forEach( token => canvas.tokens.get(token)?.control({ releaseOthers: false }))
+	controlledTokens.forEach( token => canvas.tokens.get(token)?.control({ releaseOthers: false }));
 }
 
 // Based on Cores Change Level Behavior Dialog
