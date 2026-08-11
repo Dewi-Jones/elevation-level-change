@@ -63,10 +63,11 @@ Hooks.on("preMoveToken", (token, movement, operation) => {
 	// Prevents recursive behaviour and undesired triggers like Teleports or Change Level Regions
 	if ( movement.method === "api" || movement.method === "paste" ) return
 	
-	// If the token didn't move from inside to outside the current levels range, do nothing
-	// If movement is chained, and ends within the current level's range, do nothing
+	// Only proceed, if 1 and 2:
+	// 1: The Token starts in the current levels elevation range OR in an elevation range that no level covers
+	// 2: The Token ends its movement (current or future if there are more waypoints) outside the current levels elevation range
 	const originLevel = token.parent.levels.get(token._source.level);
-	if ( !elevationInLevel(movement.origin.elevation, originLevel) ) return
+	if ( !elevationInLevel(movement.origin.elevation, originLevel) && token.parent.levels.find(l => elevationInLevel(movement.origin.elevation, l))) return
 	if ( elevationInLevel(movement.destination.elevation, originLevel) ) return
 	if ( elevationInLevel(movement.pending.waypoints.at(-1)?.elevation, originLevel) ) return
 	
